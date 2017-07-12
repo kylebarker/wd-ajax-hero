@@ -17,7 +17,9 @@
         'data-tooltip': movie.title
       });
 
-      $title.tooltip({ delay: 50 }).text(movie.title);
+      $title.tooltip({
+        delay: 50
+      }).text(movie.title);
 
       const $poster = $('<img>').addClass('poster');
 
@@ -56,5 +58,30 @@
     }
   };
 
+
   // ADD YOUR CODE HERE
+  //when search button is clicked, grab text from search bar
+  $('button').click(function() {
+    event.preventDefault();
+    movies.length = 0;
+
+    if ($('#search').val()) {
+      var searchedMovie = $('#search').val()
+      $.get("http://www.omdbapi.com/?s=" + searchedMovie + "&apikey=702b3bb5", function(data) {
+
+        var searchArr = data["Search"]
+
+        for (var i = 0; i < searchArr.length; i++) {
+          var movieObj = {};
+          movieObj["id"] = searchArr[i]["imdbID"];
+          movieObj["poster"] = searchArr[i]["Poster"];
+          movieObj["title"] = searchArr[i]["Title"];
+          movieObj["year"] = searchArr[i]["Year"]
+          movies.push(movieObj);
+        }
+        renderMovies();
+      });
+    }
+  });
+
 })();
